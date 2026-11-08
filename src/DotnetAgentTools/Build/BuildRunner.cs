@@ -18,7 +18,7 @@ internal sealed class BuildRunner(IDotnetCli dotnet, WorkspacePaths paths, TimeP
             string[] arguments = ["build", target, "-c", request.Configuration, "-nologo", "-v:q", $"-bl:{binlogPath}"];
 
             var started = timeProvider.GetTimestamp();
-            var result = await dotnet.RunAsync(arguments, paths.Root, cancellationToken);
+            var result = await dotnet.RunAsync(arguments, paths.Root, englishMessages: true, cancellationToken);
             var outcome = new BuildOutcome(
                 result.ExitCode,
                 result.TimedOut,

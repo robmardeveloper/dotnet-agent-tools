@@ -45,7 +45,7 @@ internal sealed class WorkspacePaths(IOptions<WorkspaceOptions> options)
             : fullPath;
     }
 
-    private bool IsInsideRoot(string fullPath)
+    public bool IsInsideRoot(string fullPath)
     {
         var comparison = OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
         return string.Equals(fullPath, Root, comparison)

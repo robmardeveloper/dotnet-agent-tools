@@ -1,5 +1,6 @@
 using DotnetAgentTools.Build;
 using DotnetAgentTools.Processes;
+using DotnetAgentTools.Testing;
 using DotnetAgentTools.Workspace;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -15,10 +16,12 @@ builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddSingleton<WorkspacePaths>();
 builder.Services.AddSingleton<IDotnetCli, DotnetCli>();
 builder.Services.AddSingleton<BuildRunner>();
+builder.Services.AddSingleton<TestRunner>();
 
 builder.Services
     .AddMcpServer()
     .WithStdioServerTransport()
-    .WithTools<BuildTool>();
+    .WithTools<BuildTool>()
+    .WithTools<TestTool>();
 
 await builder.Build().RunAsync();

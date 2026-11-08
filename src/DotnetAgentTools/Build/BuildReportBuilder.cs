@@ -1,3 +1,4 @@
+using DotnetAgentTools.Processes;
 using DotnetAgentTools.Workspace;
 
 namespace DotnetAgentTools.Build;
@@ -6,7 +7,6 @@ namespace DotnetAgentTools.Build;
 internal static class BuildReportBuilder
 {
     private const int MaxMessageLength = 300;
-    private const int MaxNoteLines = 15;
 
     public static BuildReport Create(
         BuildOutcome outcome, IReadOnlyList<Diagnostic> diagnostics, BuildRequest request, WorkspacePaths paths)
@@ -60,11 +60,8 @@ internal static class BuildReportBuilder
             return null;
         }
 
-        var lastLines = outcome.ConsoleOutput
-            .Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-            .TakeLast(MaxNoteLines);
         return $"dotnet build failed (exit code {outcome.ExitCode}) without reporting an error. Last lines: "
-            + string.Join(" | ", lastLines);
+            + ConsoleTail.LastLines(outcome.ConsoleOutput);
     }
 
     private static string Shorten(string message)

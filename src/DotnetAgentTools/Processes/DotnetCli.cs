@@ -10,7 +10,7 @@ internal sealed class DotnetCli(IOptions<WorkspaceOptions> options) : IDotnetCli
     private const string EnglishLanguageId = "1033";
 
     public async Task<CommandResult> RunAsync(
-        IReadOnlyList<string> arguments, string workingDirectory, CancellationToken cancellationToken)
+        IReadOnlyList<string> arguments, string workingDirectory, bool englishMessages, CancellationToken cancellationToken)
     {
         var startInfo = new ProcessStartInfo("dotnet")
         {
@@ -27,8 +27,12 @@ internal sealed class DotnetCli(IOptions<WorkspaceOptions> options) : IDotnetCli
         }
 
         // English messages whatever the machine's language, so agents and tests see the same text.
-        startInfo.Environment["DOTNET_CLI_UI_LANGUAGE"] = "en";
-        startInfo.Environment["VSLANG"] = EnglishLanguageId;
+        if (englishMessages)
+        {
+            startInfo.Environment["DOTNET_CLI_UI_LANGUAGE"] = "en";
+            startInfo.Environment["VSLANG"] = EnglishLanguageId;
+        }
+
         startInfo.Environment["DOTNET_NOLOGO"] = "1";
         startInfo.Environment["MSBUILDTERMINALLOGGER"] = "off";
 
