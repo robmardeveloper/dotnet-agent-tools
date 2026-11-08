@@ -1,0 +1,30 @@
+name: CI
+
+# Started by hand while the repository is private, to keep within the free minutes.
+# When it becomes public, add: push: { branches: [main] } and pull_request.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    # Linux here; Windows is tested on the development machine.
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      - name: Build
+        run: dotnet build DotnetAgentTools.slnx -c Release
+
+      - name: Test
+        run: dotnet test --solution DotnetAgentTools.slnx -c Release --no-build
+
+      - name: Pack
+        run: dotnet pack src/DotnetAgentTools -c Release --no-build -o artifacts
