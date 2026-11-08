@@ -57,7 +57,7 @@ In one manual try with Claude Code on the broken sample, the agent chose the `te
 to, found the changed rule from the two failures, and called the tool again to check its fix. One try, not a
 measurement.
 
-To reproduce it, with a copy of dotnet-agent-kit next to this repository:
+To reproduce the table, with a copy of dotnet-agent-kit next to this repository:
 
 ```
 dotnet run scripts/measure.cs -- ../dotnet-agent-kit/sample
