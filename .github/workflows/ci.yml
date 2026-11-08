@@ -1,8 +1,9 @@
 name: CI
 
-# Started by hand while the repository is private, to keep within the free minutes.
-# When it becomes public, add: push: { branches: [main] } and pull_request.
 on:
+  push:
+    branches: [main]
+  pull_request:
   workflow_dispatch:
 
 permissions:

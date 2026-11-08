@@ -1,4 +1,5 @@
 # dotnet-agent-tools
+n[![CI](https://github.com/robmardeveloper/dotnet-agent-tools/actions/workflows/ci.yml/badge.svg)](https://github.com/robmardeveloper/dotnet-agent-tools/actions/workflows/ci.yml)
 
 A small MCP server that gives AI coding agents the short, exact result of `dotnet build` and `dotnet test`,
 instead of the full console output.
