@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="xunit.v3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\DotnetAgentTools\DotnetAgentTools.csproj" />
+  </ItemGroup>
+
+  <!-- The broken-on-purpose projects the tests build, copied next to the test assembly. -->
+  <ItemGroup>
+    <None Include="..\fixtures\**\*" Exclude="..\fixtures\**\bin\**;..\fixtures\**\obj\**" LinkBase="fixtures" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>

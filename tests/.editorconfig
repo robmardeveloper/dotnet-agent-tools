@@ -1,0 +1,4 @@
+[*.cs]
+# Test names follow Method_Scenario_ExpectedResult (TEST-2), which needs underscores.
+# CA1707 is turned off for test code only, never for production code (SA-4).
+dotnet_diagnostic.CA1707.severity = none

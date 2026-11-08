@@ -1,0 +1,3 @@
+<Project>
+  <!-- Stops MSBuild from using the repository's settings: each fixture is a small, independent project. -->
+</Project>

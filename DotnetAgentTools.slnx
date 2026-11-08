@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/DotnetAgentTools/DotnetAgentTools.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/DotnetAgentTools.Tests/DotnetAgentTools.Tests.csproj" />
+  </Folder>
+</Solution>
