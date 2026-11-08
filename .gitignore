@@ -6,3 +6,4 @@ TestResults/
 *.binlog
 *.trx
 *.nupkg
+artifacts/
