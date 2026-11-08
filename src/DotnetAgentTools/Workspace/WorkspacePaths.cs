@@ -29,12 +29,19 @@ internal sealed class WorkspacePaths(IOptions<WorkspaceOptions> options)
             throw new McpException($"The path '{path}' is outside the workspace. Use a path inside '{Root}'.");
         }
 
-        if (!File.Exists(fullPath) && !Directory.Exists(fullPath))
+        if (Directory.Exists(fullPath))
+        {
+            return fullPath;
+        }
+
+        if (!File.Exists(fullPath))
         {
             throw new McpException($"The path '{path}' does not exist.");
         }
 
-        return fullPath;
+        return IsSolutionOrProject(fullPath)
+            ? fullPath
+            : throw new McpException($"The path '{path}' is not a solution (.sln, .slnx, .slnf), a project or a folder.");
     }
 
     /// <summary>Gives a path relative to the root with forward slashes, or the path unchanged if it is outside.</summary>
@@ -50,6 +57,18 @@ internal sealed class WorkspacePaths(IOptions<WorkspaceOptions> options)
         var comparison = OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
         return string.Equals(fullPath, Root, comparison)
             || fullPath.StartsWith(Root + Path.DirectorySeparatorChar, comparison);
+    }
+
+    /// <summary>Solutions and solution filters: .sln, .slnx and .slnf.</summary>
+    public static bool IsSolution(string path) =>
+        Path.GetExtension(path).ToUpperInvariant() is ".SLN" or ".SLNX" or ".SLNF";
+
+    /// <summary>Solutions and MSBuild projects (.csproj, .fsproj, .vbproj and the like).</summary>
+    private static bool IsSolutionOrProject(string fullPath)
+    {
+        var extension = Path.GetExtension(fullPath).ToUpperInvariant();
+        return IsSolution(fullPath)
+            || (extension.EndsWith("PROJ", StringComparison.Ordinal) && extension.Length > ".PROJ".Length);
     }
 
     private string FindDefaultTarget()

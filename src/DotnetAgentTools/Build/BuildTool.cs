@@ -20,11 +20,12 @@ internal sealed class BuildTool(BuildRunner runner)
         string configuration = "Debug",
         [Description("Also list each warning, not only their count by code. Default: false.")]
         bool includeWarnings = false,
-        [Description("Most diagnostics to list. Default: 20.")]
+        [Description("Most diagnostics to list, up to 200. Default: 20.")]
         int maxItems = DefaultMaxItems,
         CancellationToken cancellationToken = default)
     {
-        var request = new BuildRequest(path, configuration, includeWarnings, Math.Max(1, maxItems));
+        var request = new BuildRequest(
+            path, ToolArguments.Configuration(configuration), includeWarnings, ToolArguments.Limit(maxItems));
         var report = await runner.RunAsync(request, cancellationToken);
         return AgentJson.Serialize(report);
     }

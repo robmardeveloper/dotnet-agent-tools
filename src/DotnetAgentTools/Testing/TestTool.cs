@@ -20,11 +20,12 @@ internal sealed class TestTool(TestRunner runner)
         string? filter = null,
         [Description("Build configuration. Default: Debug.")]
         string configuration = "Debug",
-        [Description("Most failed tests to list. Default: 10.")]
+        [Description("Most failed tests to list, up to 200. Default: 10.")]
         int maxFailures = DefaultMaxFailures,
         CancellationToken cancellationToken = default)
     {
-        var request = new TestRequest(path, configuration, filter, Math.Max(1, maxFailures));
+        var request = new TestRequest(
+            path, ToolArguments.Configuration(configuration), ToolArguments.Filter(filter), ToolArguments.Limit(maxFailures));
         var report = await runner.RunAsync(request, cancellationToken);
         return AgentJson.Serialize(report);
     }

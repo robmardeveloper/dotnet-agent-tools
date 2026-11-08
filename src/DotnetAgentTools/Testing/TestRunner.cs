@@ -33,20 +33,11 @@ internal sealed class TestRunner(BuildRunner buildRunner, IDotnetCli dotnet, Wor
                 "add \"test\": { \"runner\": \"Microsoft.Testing.Platform\" } to global.json, or run dotnet test yourself.");
         }
 
-        var tempFolder = Directory.CreateTempSubdirectory("dotnet-agent-tools-");
-        try
-        {
-            var command = await dotnet.RunAsync(
-                BuildArguments(target, request, tempFolder.FullName), paths.Root, englishMessages: false, cancellationToken);
-            var results = tempFolder.GetFiles("*.trx", SearchOption.AllDirectories)
-                .SelectMany(trx => TrxResults.Read(trx.FullName))
-                .ToList();
-            return TestReportBuilder.Create(results, command, request, paths, timeProvider.GetElapsedTime(started));
-        }
-        finally
-        {
-            tempFolder.Delete(recursive: true);
-        }
+        using var tempFolder = new TempFolder();
+        var command = await dotnet.RunAsync(
+            BuildArguments(target, request, tempFolder.FullName), paths.Root, englishMessages: false, cancellationToken);
+        var results = tempFolder.FindFiles("*.trx").SelectMany(TrxResults.Read).ToList();
+        return TestReportBuilder.Create(results, command, request, paths, timeProvider.GetElapsedTime(started));
     }
 
     private static List<string> BuildArguments(string target, TestRequest request, string resultsFolder)
@@ -72,7 +63,7 @@ internal sealed class TestRunner(BuildRunner buildRunner, IDotnetCli dotnet, Wor
             return "--directory";
         }
 
-        return Path.GetExtension(target).ToUpperInvariant() is ".SLN" or ".SLNX" or ".SLNF" ? "--solution" : "--project";
+        return WorkspacePaths.IsSolution(target) ? "--solution" : "--project";
     }
 
     private TestReport NotRun(long started, string note, BuildReport? build = null) => new(

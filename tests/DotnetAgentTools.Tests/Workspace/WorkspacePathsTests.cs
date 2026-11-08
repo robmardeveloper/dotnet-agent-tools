@@ -46,6 +46,24 @@ public sealed class WorkspacePathsTests
     }
 
     [Fact]
+    public void ResolveTarget_FileThatIsNotAProject_IsRejected()
+    {
+        using var workspace = new FixtureWorkspace("Clean");
+
+        var error = Assert.Throws<McpException>(() => workspace.Paths.ResolveTarget("Program.cs"));
+
+        Assert.Contains("is not a solution", error.Message, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void ResolveTarget_Folder_IsAccepted()
+    {
+        using var workspace = new FixtureWorkspace("Clean");
+
+        Assert.Equal(workspace.Root, workspace.Paths.ResolveTarget("."));
+    }
+
+    [Fact]
     public void ToRelative_FileInsideTheRoot_UsesForwardSlashes()
     {
         using var workspace = new FixtureWorkspace("Clean");
