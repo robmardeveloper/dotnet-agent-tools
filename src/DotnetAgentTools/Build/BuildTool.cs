@@ -1,10 +1,11 @@
 using System.ComponentModel;
+using DotnetAgentTools.Processes;
 using ModelContextProtocol.Server;
 
 namespace DotnetAgentTools.Build;
 
 [McpServerToolType]
-internal sealed class BuildTool(BuildRunner runner)
+internal sealed class BuildTool(BuildRunner runner, OneAtATime queue)
 {
     private const int DefaultMaxItems = 20;
 
@@ -26,7 +27,7 @@ internal sealed class BuildTool(BuildRunner runner)
     {
         var request = new BuildRequest(
             path, ToolArguments.Configuration(configuration), includeWarnings, ToolArguments.Limit(maxItems));
-        var report = await runner.RunAsync(request, cancellationToken);
+        var report = await queue.RunAsync(() => runner.RunAsync(request, cancellationToken), cancellationToken);
         return AgentJson.Serialize(report);
     }
 }

@@ -1,10 +1,11 @@
 using System.ComponentModel;
+using DotnetAgentTools.Processes;
 using ModelContextProtocol.Server;
 
 namespace DotnetAgentTools.Testing;
 
 [McpServerToolType]
-internal sealed class TestTool(TestRunner runner)
+internal sealed class TestTool(TestRunner runner, OneAtATime queue)
 {
     private const int DefaultMaxFailures = 10;
 
@@ -26,7 +27,7 @@ internal sealed class TestTool(TestRunner runner)
     {
         var request = new TestRequest(
             path, ToolArguments.Configuration(configuration), ToolArguments.Filter(filter), ToolArguments.Limit(maxFailures));
-        var report = await runner.RunAsync(request, cancellationToken);
+        var report = await queue.RunAsync(() => runner.RunAsync(request, cancellationToken), cancellationToken);
         return AgentJson.Serialize(report);
     }
 }

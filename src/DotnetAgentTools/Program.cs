@@ -15,6 +15,7 @@ builder.Services.Configure<WorkspaceOptions>(builder.Configuration.GetSection(Wo
 builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddSingleton<WorkspacePaths>();
 builder.Services.AddSingleton<IDotnetCli, DotnetCli>();
+builder.Services.AddSingleton<OneAtATime>();
 builder.Services.AddSingleton<BuildRunner>();
 builder.Services.AddSingleton<TestRunner>();
 
